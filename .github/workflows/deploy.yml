@@ -18,20 +18,21 @@ jobs:
       - name: Deploy to IIS Folder
         shell: powershell
         run: |
-          $sourceFile = "$(:GITHUB_WORKSPACE)\deploy_temp_folder\index.html"
-          $destPath = "C:\inetpub\Trip"
+          $sourceFile = Join-Path $env:GITHUB_WORKSPACE "deploy_temp_folder\index.html"
           $destFile = "C:\inetpub\Trip\index.html"
+          $destDir = "C:\inetpub\Trip"
           
-          Write-Host "正在從 $sourceFile 部署到 $destFile..."
+          Write-Host "Source: $sourceFile"
+          Write-Host "Target: $destFile"
           
-          if (-not (Test-Path $destPath)) {
-              New-Item -ItemType Directory -Force -Path $destPath
+          if (-not (Test-Path $destDir)) {
+              New-Item -ItemType Directory -Force -Path $destDir
           }
           
           if (Test-Path $sourceFile) {
               Copy-Item -Path $sourceFile -Destination $destFile -Force
-              Write-Host "部署成功！"
+              Write-Host "Deployment Successful!"
           } else {
-              Write-Error "找不到來源檔案：$sourceFile"
+              Write-Host "Error: Source file not found at $sourceFile"
               exit 1
           }
