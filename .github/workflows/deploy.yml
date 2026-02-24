@@ -12,35 +12,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: site-content
-          clean: true # Actions 目錄下建議 clean，確保來源乾淨
+          path: deploy_temp_folder
+          clean: false
 
       - name: Deploy to IIS Folder
         shell: powershell
         run: |
-          $sourceFile = "$($env:GITHUB_WORKSPACE)\site-content\index.html"
+          $sourceFile = "$(:GITHUB_WORKSPACE)\deploy_temp_folder\index.html"
           $destPath = "C:\inetpub\Trip"
-          $destFile = "$destPath\index.html"
+          $destFile = "C:\inetpub\Trip\index.html"
           
-          # 檢查來源檔案是否存在
-          if (-not (Test-Path $sourceFile)) {
-              Write-Error "找不到來源 index.html，請檢查 GitHub 儲存庫結構！"
-              exit 1
-          }
-
-          # 確保目標目錄存在 [cite: 131]
+          Write-Host "正在從 $sourceFile 部署到 $destFile..."
+          
           if (-not (Test-Path $destPath)) {
               New-Item -ItemType Directory -Force -Path $destPath
           }
           
-          # 執行強制覆蓋
-          Write-Host "正在部署 $sourceFile 到 $destFile"
-          Copy-Item -Path $sourceFile -Destination $destFile -Force
-          
-          # 驗證部署結果
-          if (Test-Path $destFile) {
-              Write-Host "部署完成！檔案已更新。"
+          if (Test-Path $sourceFile) {
+              Copy-Item -Path $sourceFile -Destination $destFile -Force
+              Write-Host "部署成功！"
           } else {
-              Write-Error "部署失敗，檔案未成功寫入目標路徑。"
+              Write-Error "找不到來源檔案：$sourceFile"
               exit 1
           }
