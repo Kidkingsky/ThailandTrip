@@ -13,20 +13,22 @@ jobs:
         uses: actions/checkout@v4
         with:
           path: site-content
-          clean: false  # 關鍵！禁止 Actions 嘗試清理目錄，避免碰到正在使用的 run.cmd
+          clean: false
 
       - name: Deploy to IIS Folder
         shell: powershell
         run: |
-          $sourcePath = "site-content"
+          $sourcePath = "$($env:GITHUB_WORKSPACE)\site-content"
           $destPath = "C:\inetpub\Trip"
-          Write-Host "正在從 $sourcePath 部署檔案到 $destPath..."
+          
+          Write-Host "來源路徑: $sourcePath"
+          Write-Host "目標路徑: $destPath"
           
           if (-not (Test-Path $destPath)) {
               New-Item -ItemType Directory -Force -Path $destPath
           }
           
-          # 只複製需要的檔案，完全不理會外層
+          # 只針對 index.html 進行複製，這是最安全的
           Copy-Item -Path "$sourcePath\index.html" -Destination "$destPath\index.html" -Force
           
           Write-Host "部署完成！"
