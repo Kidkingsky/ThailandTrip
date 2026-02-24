@@ -12,7 +12,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          path: site-content  # 將程式碼下載到子目錄，避免污染 Runner 根目錄
+          path: site-content
+          clean: false  # 關鍵！禁止 Actions 嘗試清理目錄，避免碰到正在使用的 run.cmd
 
       - name: Deploy to IIS Folder
         shell: powershell
@@ -21,12 +22,11 @@ jobs:
           $destPath = "C:\inetpub\Trip"
           Write-Host "正在從 $sourcePath 部署檔案到 $destPath..."
           
-          # 確保目標目錄存在
           if (-not (Test-Path $destPath)) {
               New-Item -ItemType Directory -Force -Path $destPath
           }
           
-          # 複製檔案 (只複製 site-content 裡面的內容，完全避開 Runner 檔案)
-          Copy-Item -Path "$sourcePath\*" -Destination $destPath -Recurse -Force -Exclude ".git*", ".github*"
+          # 只複製需要的檔案，完全不理會外層
+          Copy-Item -Path "$sourcePath\index.html" -Destination "$destPath\index.html" -Force
           
           Write-Host "部署完成！"
