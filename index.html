@@ -1,0 +1,1681 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>泰國6Day陳家旅遊</title>
+    <style>
+      :root {
+        --primary: #1a5276;
+        --secondary: #27ae60;
+        --accent: #d35400;
+        --bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        --warning: #f39c12;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        margin: 0;
+        padding-bottom: 50px;
+        min-height: 100vh;
+      }
+
+      header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 20px 15px;
+        text-align: center;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        animation: slideDown 0.5s ease-out;
+      }
+
+      @keyframes slideDown {
+        from {
+          transform: translateY(-100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+      }
+
+      /* 天氣看板 */
+      .weather-panel {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(10px);
+        padding: 8px 12px;
+        border-radius: 12px;
+        margin: 10px 10px 0;
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        font-size: 0.85rem;
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .weather-item {
+        text-align: center;
+        color: white;
+      }
+
+      .weather-val {
+        font-weight: bold;
+        margin-left: 5px;
+        font-size: 1rem;
+      }
+
+      .tabs {
+        display: flex;
+        background: white;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 900;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .tab-btn {
+        flex: 1;
+        padding: 16px 8px;
+        border: none;
+        background: none;
+        cursor: pointer;
+        font-weight: bold;
+        color: #888;
+        transition: all 0.3s ease;
+        position: relative;
+        font-size: 0.95rem;
+        white-space: nowrap;
+      }
+
+      .tab-btn:hover {
+        background: #f5f5f5;
+        color: var(--primary);
+      }
+
+      .tab-btn.active {
+        color: var(--primary);
+        background: #f0f7ff;
+      }
+
+      .tab-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: var(--primary);
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+
+      .tab-content {
+        display: none;
+        padding: 20px 15px;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      .card {
+        background: white;
+        border-radius: 16px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        border-left: 5px solid var(--primary);
+        transition: all 0.3s ease;
+        animation: fadeIn 0.5s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      }
+
+      .hotel-card {
+        border-left-color: #f1c40f;
+        background: linear-gradient(135deg, #fffdf2 0%, #fff9e6 100%);
+      }
+
+      .time {
+        color: var(--accent);
+        font-weight: bold;
+        font-size: 1.1rem;
+        display: block;
+        margin-bottom: 8px;
+        padding: 5px 10px;
+        background: rgba(211, 84, 0, 0.1);
+        border-radius: 8px;
+        display: inline-block;
+      }
+
+      /* 地圖容器 */
+      .map-wrapper {
+        width: 100%;
+        height: 280px;
+        margin: 15px 0;
+        border-radius: 12px;
+        overflow: hidden;
+        background: #eee;
+        border: 2px solid #e0e0e0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+      }
+
+      .map-wrapper:hover {
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      iframe {
+        width: 100%;
+        height: 100%;
+        border: 0;
+      }
+
+      .tip-box {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-left: 4px solid var(--secondary);
+        padding: 12px 15px;
+        margin-top: 12px;
+        font-size: 0.9rem;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+      }
+
+      .tip-title {
+        font-weight: bold;
+        color: var(--secondary);
+        margin-bottom: 5px;
+        display: block;
+      }
+
+      /* 工具區域樣式 */
+      .tool-section {
+        background: white;
+        border-radius: 16px;
+        padding: 25px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      }
+
+      .tool-section h3 {
+        margin-top: 0;
+        color: var(--primary);
+        border-bottom: 3px solid var(--primary);
+        padding-bottom: 10px;
+      }
+
+      input[type="text"],
+      input[type="number"],
+      textarea {
+        padding: 12px 15px;
+        border: 2px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+        width: 100%;
+        margin: 8px 0;
+      }
+
+      input[type="text"]:focus,
+      input[type="number"]:focus,
+      textarea:focus {
+        outline: none;
+        border-color: var(--primary);
+        box-shadow: 0 0 0 3px rgba(26, 82, 118, 0.1);
+      }
+
+      button {
+        background: linear-gradient(135deg, var(--primary) 0%, #2c3e50 100%);
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      }
+
+      button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+      }
+
+      button:active {
+        transform: translateY(0);
+      }
+
+      .btn-secondary {
+        background: linear-gradient(135deg, var(--secondary) 0%, #229954 100%);
+      }
+
+      .btn-danger {
+        background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+      }
+
+      /* 分帳項目 */
+      .expense-item {
+        background: #f8f9fa;
+        padding: 12px;
+        border-radius: 8px;
+        margin: 10px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-left: 3px solid var(--accent);
+      }
+
+      .expense-total {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px;
+        border-radius: 12px;
+        margin: 15px 0;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+      }
+
+      /* 翻譯區域 */
+      .translate-box {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        margin: 15px 0;
+      }
+
+      .translate-result {
+        background: #f0f7ff;
+        padding: 15px;
+        border-radius: 8px;
+        border-left: 3px solid var(--primary);
+        min-height: 100px;
+        word-wrap: break-word;
+      }
+
+      /* RWD 響應式設計 */
+      @media (max-width: 768px) {
+        header {
+          padding: 15px 10px;
+        }
+
+        .weather-panel {
+          flex-direction: row;
+          padding: 5px 10px;
+        }
+
+        .weather-item {
+          width: auto;
+          padding: 0;
+          display: flex;
+          align-items: center;
+        }
+
+        .tabs {
+          top: 0;
+        }
+
+        .tab-btn {
+          padding: 14px 4px;
+          font-size: 0.8rem;
+        }
+
+        .tab-content {
+          padding: 15px 10px;
+        }
+
+        .card {
+          padding: 15px;
+        }
+
+        .map-wrapper {
+          height: 220px;
+        }
+
+        .translate-box {
+          grid-template-columns: 1fr;
+        }
+
+        button:not(.tab-btn):not(.btn-danger) {
+          width: 100%;
+          margin: 5px 0;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .weather-panel {
+          font-size: 0.75rem;
+        }
+        .weather-val {
+          font-size: 0.85rem;
+        }
+        .tabs {
+          top: 0;
+        }
+        .tab-btn {
+          font-size: 0.7rem;
+          padding: 12px 2px;
+        }
+        .card {
+          margin-bottom: 15px;
+        }
+        h3 {
+          font-size: 1.3rem;
+        }
+      }
+
+      @media (max-width: 380px) {
+        .tab-btn {
+          font-size: 0.65rem;
+          padding: 10px 1px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h2 style="margin: 0">🇹🇭 泰國6Day陳家旅遊</h2>
+      <div class="weather-panel">
+        <div class="weather-item">
+          氣溫 <span id="temp" class="weather-val">--°C</span>
+        </div>
+        <div class="weather-item">
+          降雨機率 <span id="rain" class="weather-val">--%</span>
+        </div>
+        <div class="weather-item">
+          狀態 <span id="w-status" class="weather-val">載入中</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showDay(event, 'd1')">
+        2/27
+      </button>
+      <button class="tab-btn" onclick="showDay(event, 'd2')">2/28</button>
+      <button class="tab-btn" onclick="showDay(event, 'd3')">3/1</button>
+      <button class="tab-btn" onclick="showDay(event, 'd4')">3/2</button>
+      <button class="tab-btn" onclick="showDay(event, 'd5')">3/3</button>
+      <button class="tab-btn" onclick="showDay(event, 'd6')">3/4</button>
+      <button class="tab-btn" onclick="showDay(event, 'split')">分帳</button>
+      <button class="tab-btn" onclick="showDay(event, 'translate')">
+        翻譯
+      </button>
+    </div>
+
+    <div id="d1" class="tab-content active">
+      <h3>Day 1: 抵達芭達雅 🏖️</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li>換泰銖：機場匯率較差，建議只換少量應急</li>
+          <li>辦手機卡：機場 AIS 櫃台購買觀光 SIM 卡</li>
+          <li>保管好護照和重要文件</li>
+          <li>注意時差：泰國比台灣慢 1 小時</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="time">11:30</span> <strong>BKK 機場接機</strong>
+        <p>班機：BR67 / BR202 前往芭達雅</p>
+        <div class="tip-box">
+          <span class="tip-title">✈️ 機場提醒</span>
+          • 領完行李後在 4 號出口集合<br />
+          • 車程約 1.5-2 小時到芭達雅<br />
+          • 記得上車前使用洗手間
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">15:00</span>
+        <strong>入住 Grande Centre Point Pattaya</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Grande%20Centre%20Point%20Pattaya&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🏨 飯店設施</span>
+          • 無邊際泳池（30樓）- 必拍網美照<br />
+          • 健身房、SPA<br />
+          • 直通 Terminal 21 購物中心
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c"
+            >🍴 晚餐 - Terminal 21</span
+          >
+          • <strong>Nara Terminal 21 Pattaya</strong>：泰式料理<br />
+          • <strong>已訂位</strong>：18:00<br />
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🛍️ 購物推薦</span>
+          • Boots 藥妝：面膜、青草藥膏、蛇牌爽身粉<br />
+          • 曼谷包 NaRaYa：便宜又實用的伴手禮<br />
+          • Big C 超市：泰國零食、調味料<br />
+          • Moshi Moshi : 蠟筆小新鼻通在這
+        </div>
+      </div>
+    </div>
+
+    <div id="d2" class="tab-content">
+      <h3>Day 2: 芭達雅包車遊 🚗</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li><strong>防曬必備</strong>：帶帽子、太陽眼鏡、防曬乳</li>
+          <li><strong>舒適鞋子</strong>：東芭樂園很大，要走很多路</li>
+          <li><strong>帶現金</strong>：水上市場很多攤販不收信用卡</li>
+          <li><strong>早點出發</strong>：東芭樂園建議早上去較涼爽</li>
+        </ul>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">09:00</span> <strong>從飯店出發</strong>
+      </div>
+
+      <div class="card">
+        <span class="time">09:30</span>
+        <strong>東芭樂園 Nong Nooch Garden 🌺</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Nong%20Nooch%20Botanical%20Garden&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🎫 門票資訊</span>
+          • 成人：500 泰銖<br />
+          • 開放時間：08:00-18:00<br />
+          • 建議停留：3-4 小時
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800"
+            >🎭 必看表演（注意時間）</span
+          >
+          • <strong>大象表演</strong>：11:30、15:00<br />
+          • <strong>泰國文化秀</strong>：10:15、15:45<br />
+          • <strong>時間會調整</strong>，進園時確認當日場次！
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📸 拍照景點</span>
+          • <strong>法國花園</strong>：超美的歐式庭園<br />
+          • <strong>恐龍谷</strong>：巨大恐龍模型<br />
+          • <strong>仙人掌園</strong>：各種奇特仙人掌<br />
+          • <strong>蘭花園</strong>：色彩繽紛<br />
+          • 租園區遊園車：約 200 泰銖（推薦！很大）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🛍️ 購物推薦</span>
+          • 蘭花相關產品（香水、保養品）<br />
+          • 泰國手工藝品<br />
+          • 明信片、紀念品
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🍴 園區美食</span>
+          • 椰子冰淇淋：約 50 泰銖<br />
+          • 新鮮椰子水：約 40 泰銖<br />
+          • 泰式小吃攤<br />
+          • 建議在園區簡單吃，下午再去水上市場吃
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">14:00</span> <strong>四方水上市場 🛶</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Pattaya%20Floating%20Market&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🎫 門票資訊</span>
+          • 成人：200 泰銖<br />
+          • 開放時間：09:00-20:00<br />
+          • 建議停留：2-3 小時
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🍴 必吃美食</span>
+          • <strong>船麵</strong>：泰式米粉湯，約 40-60 泰銖<br />
+          • <strong>烤魷魚</strong>：現烤海鮮<br />
+          • <strong>芒果糯米飯</strong>：約 60 泰銖<br />
+          • <strong>椰子冰淇淋</strong>：約 50 泰銖<br />
+          • <strong>泰式奶茶</strong>：必喝！約 30 泰銖<br />
+          • <strong>咖哩螃蟹</strong>：如果在東芭沒吃飽可以這裡吃
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🛍️ 購物推薦</span>
+          • <strong>手工藝品</strong>：編織包、木雕、陶瓷<br />
+          • <strong>泰式服飾</strong>：大象褲、沙灘裙<br />
+          • <strong>香氛產品</strong>：精油、手工皂、香薰<br />
+          • <strong>零食</strong>：芒果乾、榴槤乾、蝦餅<br />
+          • <strong>記得殺價</strong>：可以砍到 6-7 折！
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🎭 活動推薦</span>
+          • 搭船遊水上市場：約 200 泰銖/人<br />
+          • 泰式按摩：腳底按摩約 200-300 泰銖/小時<br />
+          • 看傳統表演（不定時）
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">17:00</span>
+        <strong>回到 Grande Centre Point Pattaya</strong>
+      </div>
+    </div>
+
+    <div id="d3" class="tab-content">
+      <h3>Day 3: 寺廟文化與 Ocean Sky Pattaya 遊船 ⛩️⛴️</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li><strong>寺廟穿著</strong>：不可穿無袖、短褲、短裙（需過膝）</li>
+          <li>
+            <strong>拍照禮儀</strong>：寺廟內不可穿鞋、不可對佛像比不敬手勢
+          </li>
+          <li><strong>防曬必備</strong>：帶帽子、太陽眼鏡、防曬乳</li>
+          <li>
+            <strong>晚宴服裝</strong>：Ocean Sky Pattaya
+            建議穿得體面一點（不可穿拖鞋、背心）
+          </li>
+          <li><strong>暈船藥</strong>：容易暈船的人記得提前吃藥</li>
+        </ul>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">10:00</span>
+        <strong>飯店集合出發前往 Pa Boon Cafe 5</strong>
+      </div>
+
+      <div class="card">
+        <span class="time">11:00 - 12:30</span>
+        <strong>Pa Boon Cafe 5 🍽️🐾</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Pa+Boon+Cafe+5+Pattaya&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c"
+            >🍴 午餐 & 🐾 餵動物</span
+          >
+          • 用餐並體驗餵動物活動<br />
+          • 記得攜帶相機，動物拍照好機會！
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">13:15</span> <strong>離開前往真理寺</strong>
+      </div>
+
+      <div class="card">
+        <span class="time">13:45 - 16:15</span>
+        <strong>真理寺 Sanctuary of Truth ⛩️</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Sanctuary%20of%20Truth%20Museum&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🎫 門票資訊</span>
+          • 成人：500 泰銖<br />
+          • 開放時間：08:00-17:00<br />
+          • 13:45 抵達，15 人換票入場約需 15 分鐘<br />
+          • 14:00 - 16:15 參觀
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">⚠️ 注意事項</span>
+          •
+          <strong>服裝要求</strong
+          >：需穿長褲/長裙、有袖上衣（現場可租借披肩）<br />
+          • 進入寺廟需<strong>脫鞋</strong>，建議穿好脫的鞋<br />
+          • 不可對佛像做出不敬動作<br />
+          • 攜帶防蚊液，海邊蚊子較多
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📸 拍照重點</span>
+          • 全木雕建築 - 超壯觀！<br />
+          • 海邊觀景台 - 絕美海景<br />
+          • 寺廟內的精緻木雕細節<br />
+          • 租泰服拍照：約 200-300 泰銖
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🛍️ 伴手禮推薦</span>
+          • 木雕小飾品<br />
+          • 佛牌、護身符<br />
+          • 泰國傳統手工藝品
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">16:30</span>
+        <strong>前往 Bali Hai 碼頭（15 人移動預留 15 分鐘上車時間）</strong>
+      </div>
+
+      <div class="card">
+        <span class="time">17:20</span>
+        <strong>抵達 Bali Hai Pier，準備 18:00 Ocean Sky Pattaya ⛴️</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15554.474342944302!2d100.85784789013242!3d12.932218313999066!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3102c090be001f0d%3A0x493d4a0fdaad4fb1!2sBali%20Hai%20Pier!5e0!3m2!1szh-TW!2stw!4v1771826418389!5m2!1szh-TW!2stw"
+            width="600"
+            height="450"
+            style="border: 0"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">⚠️ 重要提醒</span>
+          • 17:20 抵達 <strong>Bali Hai 碼頭</strong><br />
+          • 需搭<strong>接駁小船</strong>到大船（約 5 分鐘）<br />
+          • 建議穿<strong>得體服裝</strong>（不可拖鞋、背心）<br />
+          • 容易暈船者記得<strong>提前吃暈船藥</strong>
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800"
+            >🎭 遊船行程（約 4 小時）</span
+          >
+          • 18:00 開船<br />
+          • <strong>自助晚餐</strong>：泰式料理、海鮮、烤肉、甜點<br />
+          • <strong>人妖秀表演</strong>：約 19:00-19:40<br />
+          • <strong>現場樂隊</strong>：可點歌<br />
+          • 21:00 返回碼頭
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📸 拍照重點</span>
+          • 甲板夕陽景色<br />
+          • 人妖秀表演（合照需付小費 20-100 泰銖）<br />
+          • 夜晚海景
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🍴 自助餐必吃</span>
+          • 現烤海鮮：蝦、魷魚、魚<br />
+          • 泰式咖哩<br />
+          • 炒麵、炒飯<br />
+          • 水果、甜點<br />
+          • 飲料無限暢飲
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">21:00</span>
+        <strong>回到 Grande Centre Point Pattaya</strong>
+      </div>
+    </div>
+
+    <div id="d4" class="tab-content">
+      <h3>Day 4: 前往曼谷 🦛🦖🌆</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li>
+            <strong>退房時間</strong>：08:30 前完成退房，準時出發確保 09:30
+            前到動物園
+          </li>
+          <li><strong>高爾夫球車</strong>：進門先租 2 台，15 人移動的關鍵</li>
+          <li>
+            <strong>車上午餐</strong>：12:30 在 7-11 買好，13:00 上車邊吃邊趕路
+          </li>
+          <li>
+            <strong>快閃 Check-in</strong>：行李全交給飯店，2
+            人辦手續，其他人上廁所後立刻出發
+          </li>
+          <li><strong>侏羅紀外套</strong>：冷氣很強，記得幫小孩帶薄外套</li>
+          <li>
+            <strong>換票要提早</strong>：16:30 到 Asiatique 立刻去換票，16:45
+            準時進場
+          </li>
+        </ul>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">08:30</span> <strong>芭達雅飯店退房出發</strong>
+        <p style="margin: 6px 0 0; color: #666; font-size: 0.9em">
+          提早出發確保 09:30 前抵達綠山動物園，此時園內人最少、天氣最涼。
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="time">09:30 - 13:00</span>
+        <strong>綠山動物園 Khao Kheow Open Zoo 🦛</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Khao%20Kheow%20Open%20Zoo&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🎫 門票資訊</span>
+          • 外國人：150 泰銖<br />
+          • 開放時間：08:00-17:00
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800"
+            >🚗 進門第一件事：租高爾夫球車</span
+          >
+          • 進門先租 <strong>2 台高爾夫球車 (Golf Cart)</strong><br />
+          • 這是 15 人移動的關鍵，動物園超大走不完
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🎭 必看表演</span>
+          • <strong>企鵝逛大街</strong>：10:00 或 11:00 有場次，小孩會瘋狂！<br />
+          • <strong>大象游泳</strong>：觀察大象在水底行走的獨特畫面
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c"
+            >🍱 用餐建議（省時關鍵）</span
+          >
+          • 12:30 在出口附近的 <strong>7-11 或小吃攤</strong>買好食物<br />
+          • 13:00 上車「<strong>在車上吃午餐</strong>」，爭取交通時間
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">13:00 - 15:00</span>
+        <strong>跨城市移動（芭達雅 → 曼谷）🚐</strong>
+        <p style="margin: 6px 0 0; color: #666; font-size: 0.9em">
+          約 1.5 至 2 小時車程，讓 5 個小孩在車上補眠充電。
+        </p>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">15:00 - 15:30</span>
+        <strong>快閃 Check-in：Benviar Tonson Residence 🏨</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Benviar%20Tonson%20Residence&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">⚡ 快閃流程</span>
+          • 全團下車，<strong>行李全部交給櫃檯代管</strong><br />
+          • 派 <strong>2 位代表</strong>辦 Check-in 手續<br />
+          • 其他人上廁所後立刻回車上，準備出發
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">16:30</span>
+        <strong>抵達 Asiatique 河濱碼頭 🎡</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Asiatique%20The%20Riverfront&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🎫 換票提醒</span>
+          • 提早 <strong>15-30 分鐘</strong>到展場櫃檯換票<br />
+          • 16:45 準時進場，不要遲到！
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">16:45 - 18:30</span>
+        <strong>侏羅紀世界沉浸式體驗展 🦖</strong>
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">🦕 體驗說明</span>
+          • 約 <strong>1.5 至 2 小時</strong>的沉浸式冒險<br />
+          • 記得幫小孩帶 <strong>薄外套</strong>，冷氣很強！
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">18:45</span>
+        <strong>晚餐 - Pranakorn Grill 燒烤吃到飽 🍽️🔥</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Pranakorn+Grill+Bangkok&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🥩 餐廳亮點</span>
+          • <strong>河岸第一排</strong>看夜景吃燒烤<br />
+          • 泰式木炭火烤兩吃
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">22:00</span>
+        <strong>回到 Benviar Tonson Residence</strong>
+        <p style="margin-top: 10px; color: #666">
+          充實的一天！從動物園、侏羅紀世界到河岸夜景晚餐，完美的曼谷第一夜 🌟
+        </p>
+      </div>
+    </div>
+
+    <div id="d5" class="tab-content">
+      <h3>Day 5: 曼谷河岸與市區巡禮 🙏🛍️</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li><strong>寺廟穿著</strong>：長褲/長裙、有袖上衣（可租借披肩）</li>
+          <li><strong>參拜禮儀</strong>：脫鞋、不可對佛像比不敬手勢</li>
+          <li><strong>四面佛許願</strong>：要準備還願物品（香、蠟燭、花圈）</li>
+          <li><strong>交通工具</strong>：今天使用計程車/嘟嘟車</li>
+          <li><strong>避開塞車時段</strong>：早上 7-10 點、晚上 5-8 點</li>
+          <li><strong>帶現金</strong>：Big C 購物、寺廟參拜、計程車需要現金</li>
+        </ul>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">09:00</span> <strong>飯店出發</strong>
+        <p style="margin-top: 10px; color: #666">
+          搭計程車前往鄭王廟（車程約 20-25 分鐘）<br />
+          💰 車資約：100-150 泰銖
+        </p>
+      </div>
+
+      <div class="card">
+        <span class="time">09:30 - 11:00</span>
+        <strong>鄭王廟 Wat Arun 🙏</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Wat%20Arun&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🎫 門票資訊</span>
+          • 成人：100 泰銖<br />
+          • 開放時間：08:00-17:30<br />
+          • 建議停留：2 小時
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">⚠️ 注意事項</span>
+          • <strong>服裝要求</strong>：長褲/長裙、有袖上衣<br />
+          • <strong>進廟脫鞋</strong>：建議穿好脫的鞋<br />
+          • <strong>爬塔梯很陡</strong>：小心慢慢爬，穿布鞋較安全<br />
+          • 女性不可碰觸僧侶
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📸 拍照重點</span>
+          • <strong>主塔近拍</strong>：超壯觀的彩色陶瓷裝飾<br />
+          • <strong>塔頂俯瞰</strong>：昭披耶河景色<br />
+          • <strong>河對岸遠眺</strong>：拍全景最美<br />
+          • <strong>租泰服拍照</strong>：200-300 泰銖，超美！
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🚗 交通方式</span>
+          • 從飯店搭<strong>計程車</strong>直達鄭王廟<br />
+          • 車程約 20-25 分鐘（避開塞車時段）<br />
+          • 💰 車資約：100-150 泰銖<br />
+          • 記得跟司機說：<strong>Wat Arun</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">11:30</span>
+        <strong>Icon Siam 🏢🍽️</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=ICONSIAM+Bangkok&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🏢 商場資訊</span>
+          • 曼谷最新地標級購物中心<br />
+          • 開放時間：10:00-22:00<br />
+          • 建議停留：2-3 小時（含午餐）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800"
+            >🚗 交通方式（超順！）</span
+          >
+          • 從鄭王廟搭<strong>計程車/嘟嘟車</strong>到 Icon Siam<br />
+          • 車程約 10-15 分鐘（沿著河邊走）<br />
+          • 💰 計程車約：80-100 泰銖<br />
+          • 💰 嘟嘟車約：100-150 泰銖（記得議價）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🍴 午餐推薦</span>
+
+          <strong style="color: #d35400">1️⃣ Sook Siam 美食街（G樓）</strong
+          ><br />
+          • 泰國各地美食集合地<br />
+          • 預算：每人約 150-300 泰銖<br />
+          • 推薦：船麵、泰北咖哩、芒果糯米飯<br />
+          <br />
+
+          <strong style="color: #d35400">2️⃣ 青木和食（6樓）</strong><br />
+          • 日式料理<br />
+          • 預算：每人約 400-800 泰銖<br />
+          <br />
+
+          <strong style="color: #d35400">3️⃣ Nara Thai Cuisine（5樓）</strong
+          ><br />
+          • 高檔泰式料理<br />
+          • 預算：每人約 400-600 泰銖<br />
+          • 推薦：冬蔭功、咖哩螃蟹、芒果糯米飯<br />
+          <br />
+
+          <strong style="color: #d35400">4️⃣ MK Gold Restaurant</strong><br />
+          • 泰式火鍋<br />
+          • 預算：每人約 300-500 泰銖
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0">🛍️ 購物推薦</span>
+          • <strong>Sook Siam</strong>（G樓）：泰國手工藝品、伴手禮<br />
+          • <strong>Apple Store</strong>：東南亞最大<br />
+          • <strong>奢侈品牌</strong>：Gucci、LV、Hermès<br />
+          • <strong>泰國設計師品牌</strong><br />
+          • <strong>超市 Gourmet Market</strong>：高檔伴手禮
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📸 必拍景點</span>
+          • <strong>河岸景觀台</strong>：昭披耶河全景<br />
+          • <strong>水晶吊燈</strong>：超華麗！<br />
+          • <strong>巨型泰式裝飾藝術</strong><br />
+          • <strong>高樓層景觀餐廳</strong>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">14:30</span> <strong>四面佛 Erawan Shrine 🙏</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Erawan%20Shrine&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🙏 參拜資訊</span>
+          • 免費參觀<br />
+          • 開放時間：06:00-23:00<br />
+          • 建議停留：30-45 分鐘
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🚗 交通方式</span>
+          • 從 Icon Siam 搭<strong>計程車</strong>到四面佛<br />
+          • 車程約 15-20 分鐘（下午時段較不塞車）<br />
+          • 💰 車資約：120-150 泰銖<br />
+          • 記得跟司機說：<strong>Si Mum Phra (四面佛) / Erawan Shrine</strong>
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🙏 參拜方式</span>
+          • 購買<strong>香、蠟燭、花圈套組</strong>：約 140 泰銖<br />
+          • 從<strong>正面開始</strong>，順時針拜四面<br />
+          • 每面獻上<strong>3 炷香、1 支蠟燭、1 個花圈</strong><br />
+          • <strong>許願要具體</strong>，許願後記得回來還願！<br />
+          • 還願方式：獻花、請舞蹈團（約 400 泰銖起）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📍 位置</span>
+          • 就在 <strong>Central World 對面</strong><br />
+          • BTS Chit Lom 站 6 號出口步行 3 分鐘<br />
+          • 非常好找，地標級景點
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">15:30</span>
+        <strong>Big C Supercenter Ratchadamri & Central World 🛍️</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Big+C+Supercenter+Ratchadamri+Bangkok&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box">
+          <span class="tip-title">🕐 營業時間</span>
+          • <strong>Big C</strong>：09:00-22:00<br />
+          • <strong>Central World</strong>：10:00-22:00<br />
+          • 建議停留：2-3 小時（含兩個商場）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🚶 交通方式</span>
+          • 從四面佛<strong>步行即可到達</strong>（就在旁邊！）<br />
+          • Big C：四面佛旁，步行 3 分鐘<br />
+          • Central World：四面佛對面，步行 1 分鐘<br />
+          • 三個景點在同一區域，超方便！
+        </div>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0"
+            >🛍️ Big C 必買伴手禮</span
+          >
+          • <strong>零食類</strong>：<br />
+          &nbsp;&nbsp;- Pocky 泰國限定口味<br />
+          &nbsp;&nbsp;- 小老闆海苔（超便宜！）<br />
+          &nbsp;&nbsp;- 皇家牧場牛奶片<br />
+          &nbsp;&nbsp;- 芒果乾、榴槤乾<br />
+          &nbsp;&nbsp;- Mama 泰式泡麵<br />
+          <br />
+          • <strong>調味料</strong>：<br />
+          &nbsp;&nbsp;- 泰式酸辣醬<br />
+          &nbsp;&nbsp;- 冬蔭功湯包/醬<br />
+          &nbsp;&nbsp;- 綠咖哩、紅咖哩醬<br />
+          <br />
+          • <strong>生活用品</strong>：<br />
+          &nbsp;&nbsp;- 蛇牌爽身粉<br />
+          &nbsp;&nbsp;- 青草藥膏<br />
+          &nbsp;&nbsp;- Counterpain 酸痛藥膏
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3"
+            >🏬 Central World 購物推薦</span
+          >
+          • <strong>Boots 藥妝</strong>：<br />
+          &nbsp;&nbsp;- 面膜、保養品<br />
+          &nbsp;&nbsp;- 彩妝品牌（便宜很多）<br />
+          <br />
+          • <strong>NaRaYa 曼谷包</strong>：<br />
+          &nbsp;&nbsp;- 超便宜伴手禮<br />
+          &nbsp;&nbsp;- 各式花色包包<br />
+          <br />
+          • <strong>品牌服飾</strong>：<br />
+          &nbsp;&nbsp;- Uniqlo、H&M、Zara<br />
+          &nbsp;&nbsp;- 泰國本地品牌<br />
+          <br />
+          • <strong>美食街</strong>：<br />
+          &nbsp;&nbsp;- 各式泰國料理<br />
+          &nbsp;&nbsp;- After You 甜點（網紅蜜糖吐司）
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">💡 購物小技巧</span>
+          • Big C 比便利商店便宜 20-30%<br />
+          • 大量購買零食建議在 Big C 一次買齊<br />
+          • Central World 可退稅（消費滿 2000 泰銖）<br />
+          • 帶<strong>大袋子</strong>，會買很多！<br />
+          • 避開晚上 5 點後回程（塞車）
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">18:00 前</span>
+        <strong>回到 Benviar Tonson Residence</strong>
+        <p style="margin-top: 10px; color: #666">
+          搭計程車回飯店（車程約 10-15 分鐘）<br />
+          💰 車資約：80-100 泰銖<br />
+          ⚠️ 記得在 17:00 前叫車，避開晚上塞車時段！
+        </p>
+      </div>
+    </div>
+
+    <div id="d6" class="tab-content">
+      <h3>Day 6: 送機歸途 ✈️</h3>
+
+      <div
+        class="card"
+        style="
+          background: linear-gradient(135deg, #fff5e6 0%, #ffe6cc 100%);
+          border-left-color: #ff9800;
+        "
+      >
+        <h4 style="margin-top: 0; color: #ff9800">📋 今日重點提醒</h4>
+        <ul style="margin: 10px 0; padding-left: 20px">
+          <li><strong>退房時間</strong>：12:00 前退房</li>
+          <li><strong>行李整理</strong>：注意液體、電池托運規定</li>
+          <li><strong>提早到機場</strong>：建議提前 3 小時到達</li>
+          <li><strong>保留泰銖</strong>：機場吃飯、買最後伴手禮</li>
+          <li><strong>退稅</strong>：記得帶退稅單和護照</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <span class="time">09:00 - 11:00</span> <strong>最後採購時間 🛍️</strong>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0"
+            >🛍️ 飯店周邊最後採購</span
+          >
+          • <strong>Big C Supercenter</strong>：<br />
+          &nbsp;&nbsp;- 零食：Pocky、泰國餅乾<br />
+          &nbsp;&nbsp;- 調味料：泰式酸辣醬、冬蔭功醬<br />
+          &nbsp;&nbsp;- 泡麵：Mama 麵、冬蔭功杯麵<br />
+          &nbsp;&nbsp;- 必買：皇家牧場牛奶片、小老闆海苔<br />
+          • <strong>Boots 藥妝</strong>：<br />
+          &nbsp;&nbsp;- 面膜、青草藥膏、蛇牌爽身粉<br />
+          • <strong>7-11</strong>：最後補貨零食飲料
+        </div>
+      </div>
+
+      <div class="card hotel-card">
+        <span class="time">11:00</span> <strong>飯店退房出發 BKK 機場</strong>
+        <div class="map-wrapper">
+          <iframe
+            src="https://maps.google.com/maps?q=Suvarnabhumi%20Airport&t=&z=15&ie=UTF8&iwloc=&output=embed"
+          ></iframe>
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">🚗 前往機場</span>
+          • <strong>車程時間</strong>：約 45 分鐘（視交通狀況）<br />
+          • <strong>建議出發時間</strong>：11:00（航班 14:40）<br />
+          • 到達時間：約 11:45-12:00
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">✈️ 機場報到流程</span>
+          1. <strong>退稅</strong>（如有）：先到海關蓋章（VAT Refund Office）<br />
+          2. <strong>Check-in</strong>：長榮航空櫃台（Row D）<br />
+          3. <strong>託運行李</strong>：注意重量限制<br />
+          4. <strong>出境</strong>：通過安檢和證照查驗<br />
+          5. <strong>退稅領錢</strong>（過海關後）：VAT Refund 櫃台<br />
+          6. <strong>登機口</strong>：確認登機門位置
+        </div>
+
+        <div class="tip-box" style="border-left-color: #2196f3">
+          <span class="tip-title" style="color: #2196f3">📋 行李注意事項</span>
+          • <strong>托運限重</strong>：經濟艙 30 公斤<br />
+          • <strong>手提行李</strong>：7 公斤<br />
+          • <strong>液體規定</strong>：每瓶 ≤100ml，總量 ≤1 公升<br />
+          • <strong>禁止托運</strong>：行動電源、打火機<br />
+          • <strong>注意</strong>：榴槤、山竹等水果禁止帶上飛機
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">12:00 - 14:40</span>
+        <strong>機場免稅店 & 用餐 🍴</strong>
+
+        <div class="tip-box" style="border-left-color: #9c27b0">
+          <span class="tip-title" style="color: #9c27b0"
+            >🛍️ 機場免稅店必買</span
+          >
+          • <strong>King Power 免稅店</strong>：<br />
+          &nbsp;&nbsp;- 泰國品牌：NaRaYa 曼谷包、Harnn 保養品<br />
+          &nbsp;&nbsp;- 零食：Big C 沒買夠的可補貨<br />
+          &nbsp;&nbsp;- 菸酒：便宜很多<br />
+          • <strong>Boots</strong>：最後補貨藥妝<br />
+          • <strong>Jim Thompson</strong>：泰絲精品
+        </div>
+
+        <div class="tip-box" style="border-left-color: #e74c3c">
+          <span class="tip-title" style="color: #e74c3c">🍴 機場美食推薦</span>
+          • <strong>Magic Food Court</strong>（地下樓）：<br />
+          &nbsp;&nbsp;- 最便宜！約 50-80 泰銖<br />
+          &nbsp;&nbsp;- 打拋飯、泰式炒河粉、冬蔭功湯<br />
+          • <strong>Ootoya</strong>：日式定食<br />
+          • <strong>S&P</strong>：泰式連鎖餐廳<br />
+          • <strong>星巴克</strong>：泰國限定杯<br />
+          • <strong>Swensen's</strong>：最後吃個冰淇淋
+        </div>
+
+        <div class="tip-box" style="border-left-color: #ff9800">
+          <span class="tip-title" style="color: #ff9800">💡 機場小提醒</span>
+          • 機場有<strong>免費 WiFi</strong><br />
+          • <strong>充電站</strong>很多，不用擔心沒電<br />
+          • <strong>按摩椅</strong>：付費按摩（200-400 泰銖/30分鐘）<br />
+          • <strong>貴賓室</strong>：如有信用卡權益可使用<br />
+          • <strong>登機前 1 小時</strong>要到登機門
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="time">14:40</span> <strong>BR202 起飛回台 ✈️</strong>
+        <p style="margin-top: 10px">
+          飛行時間：約 3.5 小時<br />抵達台灣：約 19:10（台灣時間）
+        </p>
+
+        <div class="tip-box" style="border-left-color: #27ae60">
+          <span class="tip-title" style="color: #27ae60">🎉 旅程結束</span>
+          謝謝這幾天的美好回憶！<br />
+          記得整理照片、分享旅遊心得！<br />
+          下次再相約出遊！ 🇹🇭✈️🏠
+        </div>
+      </div>
+    </div>
+
+    <div id="split" class="tab-content">
+      <div class="tool-section">
+        <h3>💰 旅遊分帳計算器</h3>
+
+        <div style="margin: 20px 0">
+          <label style="font-weight: bold; display: block; margin-bottom: 5px"
+            >項目名稱</label
+          >
+          <input
+            type="text"
+            id="expenseName"
+            placeholder="例如：包車費、餐費、門票..."
+          />
+
+          <label style="font-weight: bold; display: block; margin: 15px 0 5px"
+            >金額 (泰銖)</label
+          >
+          <input type="number" id="expenseAmount" placeholder="輸入金額" />
+
+          <label style="font-weight: bold; display: block; margin: 15px 0 5px"
+            >分攤人數</label
+          >
+          <input type="number" id="expensePeople" value="4" min="1" />
+
+          <button onclick="addExpense()" style="margin-top: 15px; width: 100%">
+            ➕ 新增項目
+          </button>
+        </div>
+
+        <div id="expenseList" style="margin: 20px 0"></div>
+
+        <div class="expense-total" id="totalSection" style="display: none">
+          <div>總支出：<span id="totalAmount">0</span> 泰銖</div>
+          <div style="margin-top: 10px">
+            每人應付：<span id="perPerson">0</span> 泰銖
+          </div>
+        </div>
+
+        <button
+          class="btn-danger"
+          onclick="clearExpenses()"
+          style="width: 100%; margin-top: 10px"
+        >
+          🗑️ 清空所有記錄
+        </button>
+      </div>
+    </div>
+
+    <div id="translate" class="tab-content">
+      <div class="tool-section">
+        <h3>🌐 即時中泰翻譯</h3>
+
+        <div style="margin: 20px 0">
+          <label style="font-weight: bold; display: block; margin-bottom: 5px"
+            >輸入中文</label
+          >
+          <textarea
+            id="translateInput"
+            rows="4"
+            placeholder="請輸入要翻譯的中文..."
+          ></textarea>
+
+          <button onclick="translateText()" style="margin: 15px 0; width: 100%">
+            🔄 翻譯成泰文
+          </button>
+
+          <label style="font-weight: bold; display: block; margin: 15px 0 5px"
+            >泰文翻譯結果</label
+          >
+          <div class="translate-result" id="translateOutput">
+            <div style="color: #888; text-align: center; padding: 20px">
+              翻譯結果將顯示在這裡
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="tool-section">
+        <h3>📖 常用泰文短句</h3>
+        <div style="display: grid; gap: 10px">
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">你好 / สวัสดี (Sawadee)</span>發音：薩哇滴</div>
+            <button onclick="speakText('สวัสดี')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">謝謝 / ขอบคุณ (Khop Khun)</span>發音：扣本坤</div>
+            <button onclick="speakText('ขอบคุณ')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">多少錢？ / เท่าไหร่ (Tao Rai?)</span>發音：套來</div>
+            <button onclick="speakText('เท่าไหร่')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">太貴了 / แพงไป (Phaeng Pai)</span>發音：胖拜</div>
+            <button onclick="speakText('แพงไป')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">便宜一點 / ลดหน่อย (Lot Noi)</span>發音：囉農</div>
+            <button onclick="speakText('ลดหน่อย')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">好吃 / อร่อย (Aroi)</span>發音：阿羅伊</div>
+            <button onclick="speakText('อร่อย')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">不辣 / ไม่เผ็ด (Mai Phet)</span>發音：賣佩</div>
+            <button onclick="speakText('ไม่เผ็ด')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">廁所在哪？ / ห้องน้ำอยู่ที่ไหน (Hong Nam Yu Thi Nai?)</span>發音：紅南油踢奈</div>
+            <button onclick="speakText('ห้องน้ำอยู่ที่ไหน')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">救命 / ช่วยด้วย (Chuay Duay)</span>發音：揣對</div>
+            <button onclick="speakText('ช่วยด้วย')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+          <div class="tip-box" style="display: flex; justify-content: space-between; align-items: center;">
+            <div><span class="tip-title">我不懂 / 不เข้าใจ (Mai Khao Jai)</span>發音：賣考災</div>
+            <button onclick="speakText('ไม่เข้าใจ')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">🔊</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- Trigger deploy - Permissin updated -->
+    <script>
+      // 頁面切換功能
+      function showDay(evt, id) {
+        var content = document.getElementsByClassName("tab-content");
+        for (var i = 0; i < content.length; i++) {
+          content[i].style.display = "none";
+        }
+        var btns = document.getElementsByClassName("tab-btn");
+        for (var i = 0; i < btns.length; i++) {
+          btns[i].classList.remove("active");
+        }
+        document.getElementById(id).style.display = "block";
+        evt.currentTarget.classList.add("active");
+        window.scrollTo(0, 0);
+      }
+
+      // 獲取氣溫與降雨機率
+      async function getWeather() {
+        const today = new Date();
+        const month = today.getMonth() + 1;
+        const date = today.getDate();
+        
+        // 預設 Pattaya 座標
+        let lat = 12.93;
+        let lon = 100.88;
+        let locationName = "Pattaya";
+
+        // 判斷日期 (2/27-3/2 為 Pattaya, 3/3 以後為 Bangkok)
+        if ((month === 3 && date >= 3) || month > 3) {
+            lat = 13.75;
+            lon = 100.50;
+            locationName = "Bangkok";
+        }
+
+        try {
+          const res = await fetch(
+            `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current_weather=true&hourly=precipitation_probability`,
+          );
+          const data = await res.json();
+
+          const temp = data.current_weather.temperature;
+          document.getElementById("temp").innerText = `${temp}°C`;
+
+          const currentHour = today.getHours();
+          const rainProb = data.hourly.precipitation_probability[currentHour];
+          document.getElementById("rain").innerText = `${rainProb}%`;
+
+          const code = data.current_weather.weathercode;
+          const statusMap = {
+            0: "晴朗",
+            1: "微雲",
+            2: "多雲",
+            3: "陰天",
+            45: "有霧",
+            61: "小雨",
+            80: "陣雨",
+            95: "雷雨",
+          };
+          document.getElementById("w-status").innerText = `${locationName} ${statusMap[code] || "穩定"}`;
+        } catch {
+          document.getElementById("w-status").innerText = "載入失敗";
+        }
+      }
+
+      // === 分帳功能 ===
+      let expenses = [];
+
+      function addExpense() {
+        const name = document.getElementById("expenseName").value.trim();
+        const amount = parseFloat(
+          document.getElementById("expenseAmount").value,
+        );
+        const people = parseInt(document.getElementById("expensePeople").value);
+
+        if (!name || !amount || !people || amount <= 0 || people <= 0) {
+          alert("請填寫完整的項目資訊！");
+          return;
+        }
+
+        const expense = {
+          id: Date.now(),
+          name: name,
+          amount: amount,
+          people: people,
+          perPerson: Math.round(amount / people),
+        };
+
+        expenses.push(expense);
+
+        // 清空輸入框
+        document.getElementById("expenseName").value = "";
+        document.getElementById("expenseAmount").value = "";
+
+        updateExpenseList();
+      }
+
+      function updateExpenseList() {
+        const list = document.getElementById("expenseList");
+        const totalSection = document.getElementById("totalSection");
+
+        if (expenses.length === 0) {
+          list.innerHTML =
+            '<div style="text-align: center; color: #888; padding: 20px;">尚無分帳記錄</div>';
+          totalSection.style.display = "none";
+          return;
+        }
+
+        let html = "";
+        let totalAmount = 0;
+        let totalPerPerson = 0;
+
+        expenses.forEach((expense) => {
+          totalAmount += expense.amount;
+          totalPerPerson += expense.perPerson;
+
+          html += `
+            <div class="expense-item">
+                <div>
+                    <strong>${expense.name}</strong><br>
+                    <small style="color: #666;">${expense.amount} 泰銖 ÷ ${expense.people} 人</small>
+                </div>
+                <div style="text-align: right;">
+                    <strong style="color: var(--accent);">${expense.perPerson} 泰銖/人</strong><br>
+                    <button onclick="deleteExpense(${expense.id})" class="btn-danger" style="font-size: 0.8rem; padding: 5px 10px; margin-top: 5px;">刪除</button>
+                </div>
+            </div>
+        `;
+        });
+
+        list.innerHTML = html;
+
+        // 更新總計
+        document.getElementById("totalAmount").innerText =
+          Math.round(totalAmount);
+        document.getElementById("perPerson").innerText =
+          Math.round(totalPerPerson);
+        totalSection.style.display = "block";
+      }
+
+      function deleteExpense(id) {
+        expenses = expenses.filter((expense) => expense.id !== id);
+        updateExpenseList();
+      }
+
+      function clearExpenses() {
+        if (expenses.length === 0) return;
+
+        if (confirm("確定要清空所有分帳記錄嗎？")) {
+          expenses = [];
+          updateExpenseList();
+        }
+      }
+
+      // === 翻譯功能 ===
+      function speakText(text) {
+        if (!window.speechSynthesis) {
+          alert("您的瀏覽器不支援語音功能");
+          return;
+        }
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = "th-TH"; // 設定為泰文
+        window.speechSynthesis.speak(utterance);
+      }
+
+      async function translateText() {
+        const input = document.getElementById("translateInput").value.trim();
+        const output = document.getElementById("translateOutput");
+
+        if (!input) {
+          alert("請輸入要翻譯的中文！");
+          return;
+        }
+
+        output.innerHTML =
+          '<div style="text-align: center; color: #888; padding: 20px;">翻譯中...</div>';
+
+        try {
+          // 使用 MyMemory Translation API (免費)
+          const res = await fetch(
+            `https://api.mymemory.translated.net/get?q=${encodeURIComponent(
+              input,
+            )}&langpair=zh-TW|th`,
+          );
+          const data = await res.json();
+
+          if (data.responseStatus === 200 && data.responseData.translatedText) {
+            const translatedText = data.responseData.translatedText;
+            output.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <div style="font-size: 1.2rem; font-weight: bold; color: var(--primary);">
+                        ${translatedText}
+                    </div>
+                    <button onclick="speakText('${translatedText.replace(/'/g, "\\'")}')" style="padding: 5px 10px; font-size: 0.8rem; background: var(--secondary);">
+                        🔊 播放
+                    </button>
+                </div>
+                <div style="color: #666; font-size: 0.9rem; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                    <strong>原文：</strong>${input}
+                </div>
+            `;
+          } else {
+            throw new Error("翻譯失敗");
+          }
+        } catch (error) {
+          output.innerHTML = `
+            <div style="color: #e74c3c; text-align: center; padding: 20px;">
+                ⚠️ 翻譯失敗，請檢查網路連線或稍後再試
+            </div>
+        `;
+        }
+      }
+
+      // 頁面載入時初始化
+      getWeather();
+      updateExpenseList();
+    </script>
+  </body>
+</html>

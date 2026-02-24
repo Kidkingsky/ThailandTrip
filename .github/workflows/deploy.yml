@@ -1,0 +1,32 @@
+name: Deploy to Windows IIS
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    name: Copy to IIS
+    runs-on: self-hosted
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          path: site-content  # 將程式碼下載到子目錄，避免污染 Runner 根目錄
+
+      - name: Deploy to IIS Folder
+        shell: powershell
+        run: |
+          $sourcePath = "site-content"
+          $destPath = "C:\inetpub\Trip"
+          Write-Host "正在從 $sourcePath 部署檔案到 $destPath..."
+          
+          # 確保目標目錄存在
+          if (-not (Test-Path $destPath)) {
+              New-Item -ItemType Directory -Force -Path $destPath
+          }
+          
+          # 複製檔案 (只複製 site-content 裡面的內容，完全避開 Runner 檔案)
+          Copy-Item -Path "$sourcePath\*" -Destination $destPath -Recurse -Force -Exclude ".git*", ".github*"
+          
+          Write-Host "部署完成！"
